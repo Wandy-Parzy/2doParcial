@@ -4,11 +4,12 @@ using Parcial2_Wandy.Models;
 
 namespace Parcial2_Wandy.Data;
 
-public class ApplicationDbContext : IdentityDbContext
+public class Contexto : IdentityDbContext
 {
     public DbSet<Vitaminas> Vitaminas {get; set;}
+    public DbSet<Verduras> Verduras {get; set;}
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    public Contexto(DbContextOptions<Contexto> options)
         : base(options)
     {
     }

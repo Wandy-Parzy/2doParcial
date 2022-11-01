@@ -1,0 +1,17 @@
+@page "/R_verdura"
+ 
+@inject VitaminasBLL vitaminasBLL
+@inject NotificationService notificationService
+
+ 
+
+
+@code{
+    [Parameter]
+    public int VerduraId { get; set; }
+    public Verduras verdura { get; set; } = new Verduras();
+    //public VerdurasDetalle detalle { get; set; } = new VerdurasDetalle();
+    public List<Vitaminas> lista { get; set; } = new List<Vitaminas>();
+
+    
+}

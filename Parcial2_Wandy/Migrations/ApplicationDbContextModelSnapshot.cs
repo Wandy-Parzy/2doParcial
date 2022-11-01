@@ -9,7 +9,7 @@ using Parcial2_Wandy.Data;
 
 namespace Parcial2_Wandy.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(Contexto))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

@@ -10,7 +10,7 @@ using Parcial2_Wandy.Data;
 
 namespace Parcial2_Wandy.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(Contexto))]
     [Migration("20221031234919_Inicial")]
     partial class Inicial
     {
