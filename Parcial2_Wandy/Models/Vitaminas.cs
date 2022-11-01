@@ -6,6 +6,5 @@ namespace Parcial2_Wandy.Models{
        [Key] 
        public int VitaminaId { get; set; }
        public string? Nombre  { get; set; }
-       public string? Descripcion  { get; set; }
     }
 }

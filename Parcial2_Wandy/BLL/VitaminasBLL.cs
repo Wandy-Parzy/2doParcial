@@ -17,10 +17,14 @@ public class VitaminasBLL
                 .AsNoTracking()
                 .SingleOrDefault();
          }
-    
-       
+      
+        public List<Vitaminas> GetList()
+        {
+            return _contexto.Vitaminas
+                .AsNoTracking()
+                .ToList();
+        }
     }
-
 
 
     

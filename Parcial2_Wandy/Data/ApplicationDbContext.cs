@@ -18,10 +18,10 @@ protected override void OnModelCreating(ModelBuilder modelBuilder){
     base.OnModelCreating(modelBuilder);
     
     modelBuilder.Entity<Vitaminas>().HasData(
-        new Vitaminas { VitaminaId = 1, Nombre ="Vitamina C"},
+        new Vitaminas { VitaminaId = 1, Nombre ="Vitamina A"},
         new Vitaminas { VitaminaId = 2, Nombre ="Betaina "},
-        new Vitaminas { VitaminaId = 3, Nombre ="Vitamina K "}, 
-        new Vitaminas { VitaminaId = 4, Nombre ="Vitamina A "}, 
+        new Vitaminas { VitaminaId = 3, Nombre ="Vitamina B "}, 
+        new Vitaminas { VitaminaId = 4, Nombre ="Vitamina C "}, 
         new Vitaminas { VitaminaId = 5, Nombre ="Vitamina D "}
     );
 }

@@ -1,17 +1,209 @@
 @page "/R_verdura"
- 
+@inject VerdurasBLL verdurasBLL
 @inject VitaminasBLL vitaminasBLL
-@inject NotificationService notificationService
+@inject NotificationService notificacion
 
- 
+<EditForm Model="verdura" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="card">
+        <div class="card-header">
+            <h3>Registro de verduras</h3>
+        </div>
+
+        <div class="card-body">
+
+            @*VerduraId*@
+            <div class="form-r ow align-items-center">
+                <div class="col-3">
+                    <label>VerduraId</label>
+                    <div class="input-group mb-3">
+                        <InputNumber @bind-Value="verdura.VerduraId" class="form-control col-4" />
+                        <div class="input-group-append">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-primary input-group-text"
+                                    @onclick="Buscar">Buscar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                @*Fecha*@
+                <div class="col-md-2 ">
+                    <label>Fecha Creacion</label>
+                    <InputDate @bind-Value="verdura.FechaCreacion" class="form-control" />
+                    <ValidationMessage For="@(() => verdura.FechaCreacion)" />
+                </div>
+            </div>
 
 
-@code{
+            @*Nombre*@
+            <div class="col-5">
+                <label>Nombre verdura</label>
+                <InputText @bind-Value="verdura.Nombre" class="form-control" />
+                <ValidationMessage For="@(() => verdura.Nombre)" />
+            </div>
+        </div>
+    </div>
+
+    @* Verdura de verdura *@
+    <div class="card-body">
+        <div class="row input-group d-flex align-items-end">
+
+            @*VitaminaId*@
+            <div class="col-md-3">
+                <label>VitaminaId</label>
+                <InputSelect class="form-select" @bind-Value="detalle.VitaminaId">
+                    <option value="0" disabled> Seleccione uno </option>
+                    @foreach (var verdura in lista)
+                    {
+                        <option value="@verdura.VitaminaId"> @verdura.Nombre</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => detalle.VitaminaId)" class="form-control" />
+            </div>
+
+            @*Cantidad*@
+            <div class="col-md-2">
+                <label>Cantidad (mg)</label>
+                <InputNumber @bind-Value="detalle.Cantidad" class="form-control" />
+                <ValidationMessage For="@(() => detalle.Cantidad)" />
+            </div>
+            @* boton agregar detalle*@
+            <button type="button" class="btn btn-primary input-group-text col-md-1" @onclick="AddDetalle">
+                Agregar</button>
+        </div>
+    </div>
+
+
+    @* Tabla detalle *@
+    <hr />
+    <table class="table table-bordered table-light">
+        <thead class="thead">
+            <tr class="table">
+                <th>VitaminaId</th>
+                <th>Nombre</th>
+                <th>Cantidad(mg)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in verdura.Detalle)
+            {
+                <tr>
+                    <td>@item.VitaminaId</td>
+                    <td>@item.Descripcion</td>
+                    <td>@item.Cantidad</td>
+                    <td> <button @onclick="@(() => verdura.Detalle.Remove(detalle) )"><i class="oi oi-trash" />
+                            Eliminar</button> </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="row justify-content-between">
+        <div class="col-4">
+            <label>Monto Total</label>
+            <div class="input-group mb-3">
+                <span class="form-control">@detalle.Cantidad</span>
+            </div>
+        </div>
+    </div>
+    <hr />
+
+    @*Observaciones verduras*@
+    <div class="form-floating">
+        <textarea type="text" class="form-control" @bind="verdura.Observaciones"></textarea>
+        <label for="Textarea">Observación</label>
+    </div>
+
+
+    <div class="card-footer">
+        <div class="mb-3 text-center" display: inline-block>
+            <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo">
+                <i class="oi oi-file" /> Nuevo
+            </button>
+            <button type="submit" class="btn btn-lg btn-success">
+                <i class="oi oi-document" /> Guardar
+            </button>
+            <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar">
+                <i class="oi oi-trash" /> Eliminar
+            </button>
+        </div>
+    </div>
+
+</EditForm>
+
+@code {
     [Parameter]
     public int VerduraId { get; set; }
     public Verduras verdura { get; set; } = new Verduras();
-    //public VerdurasDetalle detalle { get; set; } = new VerdurasDetalle();
+    public VerdurasDetalles detalle { get; set; } = new VerdurasDetalles();
     public List<Vitaminas> lista { get; set; } = new List<Vitaminas>();
 
-    
+    protected override void OnInitialized()
+    {
+        lista = vitaminasBLL.GetList();
+        verdura.VerduraId = 0;
+        verdura.FechaCreacion = DateTime.Now;
+        if (VerduraId > 0)
+        {
+            verdura.VerduraId = VerduraId;
+            Buscar();
+        }
+    }
+    void Buscar()
+    {
+        var encontrado = verdurasBLL.Buscar(verdura.VerduraId);
+        if (encontrado != null)
+        {
+            verdura = encontrado;
+            this.verdura = encontrado;
+            notificacion.ShowNotification("Registro encontrado", NotificationSeverity.Success);
+        }
+        else
+        {
+            notificacion.ShowNotification("Registro no encontrado", NotificationSeverity.Warning);
+        }
+    }
+
+    void Nuevo()
+    {
+        this.verdura = new Verduras();
+        notificacion.ShowNotification("Nueva plantilla.", NotificationSeverity.Success);
+
+    }
+    void Guardar()
+    {
+        if (verdurasBLL.Guardar(verdura))
+        {
+            Nuevo();
+            notificacion.ShowNotification("Guardado correctamente.");
+        }
+        else
+        {
+            notificacion.ShowNotification("No fue guardado.", NotificationSeverity.Error);
+        }
+    }
+
+    public void AddDetalle()
+    {
+        var vitamina = vitaminasBLL.Buscar(detalle.VitaminaId);
+        detalle.Descripcion = verdura.Nombre;
+        this.verdura.Detalle.Add(this.detalle);
+        this.detalle = new VerdurasDetalles();
+
+        detalle.Cantidad = verdura.Detalle.Sum(d => d.Cantidad);
+    }
+
+    void Eliminar()
+    {
+        if (verdurasBLL.Eliminar(verdura))
+        {
+            Nuevo();
+            notificacion.ShowNotification("Eliminado correctamente.");
+        }
+        else
+        {
+            notificacion.ShowNotification("No fue eliminado.", NotificationSeverity.Error);
+        }
+    }
+
 }

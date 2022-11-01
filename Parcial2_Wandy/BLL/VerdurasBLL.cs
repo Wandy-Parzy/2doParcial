@@ -3,7 +3,6 @@
 using Parcial2_Wandy.Models;
 using Parcial2_Wandy.Data;
 
-namespace VerdurasBLL.BLL{
 public class VerdurasBLL
     {
        private Contexto _contexto;
@@ -15,51 +14,49 @@ public class VerdurasBLL
         {
             return _contexto.Verduras.Any(c => c.VerduraId == Id);
         }
+       
         public bool Guardar(Verduras verdura)
         {
-          if (!Existe(verdura.VerduraId))
-               return  this.Insertar(verdura);
+            bool paso = false;
+
+            if (!Existe(verdura.VerduraId))
+                paso = Insertar(verdura);
             else
-                return  this.Modificar(verdura);
+                paso = Modificar(verdura);
+               return paso;
+
         }
-
-         private bool Insertar(Verduras verdura)
+        private bool Insertar(Verduras verdura)
         {
-           _contexto.Verduras.Add(verdura);
-            
-
+            _contexto.Verduras.Add(verdura);
             bool insertar = _contexto.SaveChanges() >0;
-            _contexto.Entry(verdura).State = EntityState.Detached;
-            return insertar;          
+            return insertar;           
         }
         
-        private bool Modificar(Verduras verdura)
+         private bool Modificar(Verduras verdura)
         {
-           _contexto.Entry(verdura).State = EntityState.Modified;
-            return _contexto.SaveChanges() > 0;          
+            
+            _contexto.Entry(verdura).State = EntityState.Modified;
+            return  _contexto.SaveChanges() > 0;
         }
-
-         public bool Eliminar(Verduras verdura)
-          {
+       public bool Eliminar(Verduras verdura)
+        {
             _contexto.Entry(verdura).State = EntityState.Deleted;
-            return _contexto.SaveChanges() > 0;
-          }
+            return  _contexto.SaveChanges() > 0;
+        } 
 
-           public Verduras? Buscar(int verduraId)
+        public Verduras? Buscar(int verduraId)
+        {
+           return  _contexto.Verduras
+            .Where(o=> o.VerduraId == verduraId)
+            .AsNoTracking()
+            .SingleOrDefault();
+        }
+         public List<Verduras> GetList(Expression<Func<Verduras, bool>> Criterio)
           {
-            return _contexto.Verduras
-                .Where(o => o.VerduraId == verduraId)
-                .AsNoTracking()
-                .SingleOrDefault();
-          }
-
-       public List<Verduras> GetList(Expression<Func<Verduras, bool>> Criterio)
-          {
-            return _contexto.Verduras
-                .AsNoTracking()
+               return  _contexto.Verduras
                 .Where(Criterio)
+                .AsNoTracking()
                 .ToList();
           }
-     }
-
 }

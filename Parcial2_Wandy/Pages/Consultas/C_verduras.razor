@@ -1,0 +1,75 @@
+@page "/C_verduras"
+@inject VerdurasBLL verdurasBLL
+@inject VitaminasBLL vitaminasBLL
+
+<EditForm Model="verduras">
+    <div class="card">
+        <div class="card-header">
+            <h3>Consultas de personas</h3>
+        </div>
+
+       <div class = "col-4">
+            <label class = "sr-only" for = "nombre-filtro">Filtrar</label>
+            <input type = "text" class = "form-control col-2 "
+           @bind = "Fecha" placeholder=" Filtar por fecha"/>
+            <button type="button" class="btn btn-primary mr-sm-2 mb-2"
+            @onclick = "Filtrar">Filtrar</button>
+       </div>
+
+        <div class="card-body">
+            <form>
+                <div class="input-group d-flex align-items-end">
+                    <button type="button" class="btn btn-primary " @onclick="Buscar">
+                        <i class="oi oi-magnifying-glass mr-2 mb-2"> Generar Lista </i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>VerduraId</th>
+                    <th>Nombre</th>
+                    <th>Fecha</th>
+                    <th>Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var verdura in verduras)
+                {
+                    <tr>
+                        <td>@verdura.VerduraId</td>
+                        <td>@verdura.Nombre</td>
+                        <td>@verdura.FechaCreacion</td>
+                        <td>@verdura.Observaciones </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+</EditForm>
+
+@code {
+    public List<Verduras> verduras { get; set; } = new List<Verduras>();
+      public List<Verduras> lista { get; set; } = new List<Verduras>();
+     public Verduras verdura { get; set; } = new Verduras();
+   
+    public DateTime Fecha { get; set; } 
+
+    private int filt =  1;
+
+
+     void Filtrar()
+      {
+         Fecha =DateTime.Now;
+      }
+
+    void Buscar()
+    {
+        verduras = verdurasBLL.GetList(o => true);
+    }
+}

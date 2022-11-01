@@ -7,7 +7,10 @@ namespace Parcial2_Wandy.Models{
        [Key]
        public int VerduraId { get; set; }
        public DateTime FechaCreacion { get; set; }
+
+       [Required(ErrorMessage = "El nombre es requerido")]
        public string? Nombre { get; set; }
+
        public string? Observaciones { get; set; }
      
         [ForeignKey("VitaminaId")]
